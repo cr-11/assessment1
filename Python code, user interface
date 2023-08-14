@@ -1,0 +1,30 @@
+def game_deals():
+    print("Here are some amazing game deals!")
+
+def search_by_name():
+    name = input("Enter the game name: ")
+    print(f"Searching for '{name}'...")
+
+def search_by_game_id():
+    game_id = input("Enter the game ID: ")
+    print(f"Searching for game with ID '{game_id}'...")
+
+def main():
+    print("Please choose one from the following:")
+    print("1. Game deals")
+    print("2. Search by name")
+    print("3. Search by game ID")
+
+    choice = input("Enter your choice (1/2/3): ")
+
+    if choice == '1':
+        game_deals()
+    elif choice == '2':
+        search_by_name()
+    elif choice == '3':
+        search_by_game_id()
+    else:
+        print("Invalid choice. Please select a valid option.")
+
+if __name__ == "__main__":
+    main()
