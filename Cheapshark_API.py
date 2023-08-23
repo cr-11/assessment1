@@ -1,6 +1,6 @@
 import requests
 
-def game_deals():
+def game_deals():                   #API GET code
     url = "https://www.cheapshark.com/api/1.0/deals?storeID=1&upperPrice=15"
 
     payload = {}
@@ -15,7 +15,7 @@ def game_deals():
             normal_price = deal["normalPrice"]
             deal_price = deal["salePrice"]
 
-            print("Game Title:", title)
+            print("Game Title:", title)  # Sorting Json file to receive only relevant info
             print("Normal Price:", normal_price)
             print("Deal Price:", deal_price)
             print("-" * 30)
@@ -30,7 +30,7 @@ def search_by_game_id():
     game_id = input("Enter the game ID: ")
     
 
-def main():
+def main():                 #Options for the user to choose from
     while True:
         print("Please choose one from the following:")
         print("1. Game deals")
