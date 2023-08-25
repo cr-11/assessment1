@@ -1,0 +1,142 @@
+import requests
+import random
+
+def fetch_game_deals():
+    url = "https://www.cheapshark.com/api/1.0/deals?storeID=1&upperPrice=15"
+    payload = {}
+    headers = {}
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    if response.status_code == 200:
+        deals = response.json()[:5]  #Getting 5 deals from the API
+        return deals
+    else:
+        print("Failed to retrieve game deals. Status code:", response.status_code)
+        return []
+
+def search_by_name(game_name, deals):        #Search by game name code
+    matching_deals = []
+    for deal in deals:
+        if game_name.lower() in deal["title"].lower():
+            matching_deals.append(deal)
+    return matching_deals
+
+def search_by_game_id(game_id, deals):      #Search by game ID code
+    for deal in deals:
+        if str(deal["gameID"]) == game_id:
+            return deal
+    return None
+
+def search_by_cost(min_price, max_price, deals):   #Search by price range
+    while True:
+        min_price_input = input("Enter the minimum price: ")
+        max_price_input = input("Enter the maximum price: ")
+        
+        try:
+            min_price = float(min_price_input)
+            max_price = float(max_price_input)
+            break
+        except ValueError:
+            print("Invalid input. Please enter valid numeric prices.")
+    
+    matching_deals = []
+    for deal in deals:
+        normal_price = float(deal["salePrice"])
+        if min_price <= normal_price <= max_price:
+            matching_deals.append(deal)
+    return matching_deals
+
+def main():            #User options
+    while True:
+        print("Please choose one from the following:")
+        print("1. Game deals")
+        print("2. Search by name")
+        print("3. Search by game ID")
+        print("4. Search by cost")
+        print("5. Exit")
+        choice = input("Enter your choice (1/2/3/4/5): ")
+
+        deals = fetch_game_deals()  # Fetch deals for all options
+        
+        if choice == '1':
+            print("Random Games with Game Name:")
+            random.shuffle(deals)
+            for _ in range(5):
+                deal = random.choice(deals)
+                print("Game Name:", deal["title"])
+            
+            for deal in deals:                      #Sorted Json file displayed for the user
+                print("Game Title:", deal["title"])
+                print("Deal ID:", deal["dealID"])
+                print("Game ID:", deal["gameID"])
+                print("Normal Price:", deal["normalPrice"])
+                print("Deal Price:", deal["salePrice"])
+                print("-" * 30)
+                
+        elif choice == '2':
+            print("Random Games with Game Name:")
+            random.shuffle(deals)
+            for _ in range(5):
+                deal = random.choice(deals)
+                print("Game Name:", deal["title"])
+            
+            game_name = input("Enter the game name: ")
+            matching_deals = search_by_name(game_name, deals)
+            
+            if len(matching_deals) == 0:
+                print("No matching deals found.")
+            else:
+                for deal in matching_deals:
+                    print("Game Title:", deal["title"])
+                    print("Deal ID:", deal["dealID"])
+                    print("Game ID:", deal["gameID"])
+                    print("Normal Price:", deal["normalPrice"])
+                    print("Deal Price:", deal["salePrice"])
+                    print("-" * 30)
+                
+        elif choice == '3':
+            print("Random Games with Game ID:")
+            random.shuffle(deals)
+            for _ in range(5):
+                deal = random.choice(deals)
+                print("Game ID:", deal["gameID"])
+            
+            game_id = input("Enter the game ID: ")
+            game = search_by_game_id(game_id, deals)
+            
+            if game:
+                print("Game Title:", game["title"])
+                print("Deal ID:", game["dealID"])
+                print("Game ID:", game["gameID"])
+                print("Normal Price:", game["normalPrice"])
+                print("Deal Price:", game["salePrice"])
+                print("-" * 30)
+            else:
+                print("Game not found.")
+        
+        elif choice == '4':
+            deals = fetch_game_deals()
+            min_price = None
+            max_price = None
+            
+            while min_price is None or max_price is None:
+                matching_deals = search_by_cost(min_price, max_price, deals)
+                if len(matching_deals) == 0:
+                    print("No matching deals found.")
+                else:
+                    for deal in matching_deals:
+                        print("Game Title:", deal["title"])
+                        print("Deal ID:", deal["dealID"])
+                        print("Game ID:", deal["gameID"])
+                        print("Normal Price:", deal["normalPrice"])
+                        print("Deal Price:", deal["salePrice"])
+                        print("-" * 30)
+                break
+            
+        elif choice == '5':
+            break
+        else:
+            print("Invalid choice. Please select a valid option.")
+
+if __name__ == "__main__":
+    main()
