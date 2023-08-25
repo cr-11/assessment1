@@ -54,6 +54,26 @@ def search_by_name(game_name, deals):
 
 def search_by_game_id():
     game_id = input("Enter the game ID: ")
+
+# This function allows to search for a deal between a chosen price range
+def search_by_cost(min_price, max_price, deals):
+    while True:
+        min_price_input = input("Enter the minimum price: ") # Gives search tab for minimum price
+        max_price_input = input("Enter the maximum price: ") # Gives search tab for maximum price
+        
+        try:
+            min_price = float(min_price_input)  
+            max_price = float(max_price_input)  
+            break  # Exit the loop if conversion was successful
+        except ValueError:
+            print("Invalid input. Please enter valid numeric prices.") # This makes sure that the user enters a number in both search tabs
+    
+    matching_deals = []
+    for deal in deals:
+        normal_price = float(deal["salePrice"])  # Gives the sale price of the deal
+        if min_price <= normal_price <= max_price:  # Equation to give products only in the user's specified price range
+            matching_deals.append(deal)  # This adds the given deal to the output (Terminal)
+    return matching_deals  # This gets the user back to all the possible products in the specified price range
     
 
 def main():                 #Options for the user to choose from
@@ -71,7 +91,23 @@ def main():                 #Options for the user to choose from
             search_by_name()
         elif choice == '3':
             search_by_game_id()
-        elif choice == '4':
+        elif choice == '4': # The specified choice
+            deals = fetch_game_deals() # Fetches game deals
+            min_price = None 
+            max_price = None
+            
+            while min_price is None or max_price is None:
+                matching_deals = search_by_cost(min_price, max_price, deals)
+                if len(matching_deals) == 0: # Looks if there are actual deals, corresponding to the specified price range
+                    print("No matching deals found.")
+                else:
+                    for deal in matching_deals:
+                        print("Game Title:", deal["title"])
+                        print("Deal ID:", deal["dealID"])
+                        print("Game ID:", deal["gameID"])
+                        print("Normal Price:", deal["normalPrice"])
+                        print("Deal Price:", deal["salePrice"])
+                        print("-" * 30)
             break
         else:
             print("Invalid choice. Please select a valid option.")
