@@ -1,4 +1,5 @@
 import requests
+import random
 
 def game_deals():                   #API GET code
     url = "https://www.cheapshark.com/api/1.0/deals?storeID=1&upperPrice=15"
@@ -9,7 +10,7 @@ def game_deals():                   #API GET code
     response = requests.request("GET", url, headers=headers, data=payload)
 
     if response.status_code == 200:
-        deals = response.json()[:3]  # Get the first 3 deals
+        deals = response.json()[:5]  # Get the first 5 deals
         for deal in deals:
             title = deal["title"]
             normal_price = deal["normalPrice"]
@@ -31,27 +32,6 @@ def search_by_name(game_name, deals):
             matching_deals.append(deal)  # This will add to the list of matching deals
     return matching_deals  # Return the list of matching deals
 
-        elif choice == '2':
-            print("Random Games with Game Name:")
-            random.shuffle(deals)  # Gives some examples for random games
-            for _ in range(5): #The maximun number of games that will show will be 5.
-                deal = random.choice(deals)  # Select a random deal
-                print("Game Name:", deal["title"])
-            
-            game_name = input("Enter the game name: ")
-            matching_deals = search_by_name(game_name, deals)
-            
-            if len(matching_deals) == 0:
-                print("No matching deals found.") #This will come out if any matching games was found
-            else:
-                for deal in matching_deals:
-                    print("Game Title:", deal["title"])
-                    print("Deal ID:", deal["dealID"])
-                    print("Game ID:", deal["gameID"])
-                    print("Normal Price:", deal["normalPrice"])
-                    print("Deal Price:", deal["salePrice"])
-                    print("-" * 30)
-
 # Function to search for a deal by game ID
 def search_by_game_id(game_id, deals):
     for deal in deals:
@@ -59,26 +39,7 @@ def search_by_game_id(game_id, deals):
         if str(deal["gameID"]) == game_id:
             return deal  # Returns this particular deal
     return None  # Returns nothing if the game ID was not found in the deals
-
-        elif choice == '3':
-            print("Random Games with Game ID:")
-            random.shuffle(deals)  # Displays random examples for Game IDs
-            for _ in range(5): # Five game examples are given
-                deal = random.choice(deals)  # Selects a random deal
-                print("Game ID:", deal["gameID"])
-            
-            game_id = input("Enter the game ID: ")
-            game = search_by_game_id(game_id, deals)
-            
-            if game:
-                print("Game Title:", game["title"])
-                print("Deal ID:", game["dealID"])
-                print("Game ID:", game["gameID"])
-                print("Normal Price:", game["normalPrice"])
-                print("Deal Price:", game["salePrice"])
-                print("-" * 30)
-            else:
-                print("Game not found.")
+        
 
 # This function allows to search for a deal between a chosen price range
 def search_by_cost(min_price, max_price, deals):
@@ -113,9 +74,47 @@ def main():                 #Options for the user to choose from
         if choice == '1':
             game_deals()
         elif choice == '2':
-            search_by_name()
+            print("Random Games with Game Name:")
+            random.shuffle(deals)  # Gives some examples for random games
+            for _ in range(5): #The maximun number of games that will show will be 5.
+                deal = random.choice(deals)  # Select a random deal
+                print("Game Name:", deal["title"])
+            
+            game_name = input("Enter the game name: ") #game_name will catch the name typed by the user.
+            matching_deals = search_by_name(game_name, deals) #The game_name will be passed as a parameter to the function search_by_name to see the matching results.
+            
+            if len(matching_deals) == 0:
+                print("No matching deals found.") #This will come out if any matching games was found
+            else:
+                for deal in matching_deals:
+                    print("Game Title:", deal["title"])
+                    print("Deal ID:", deal["dealID"])
+                    print("Game ID:", deal["gameID"])
+                    print("Normal Price:", deal["normalPrice"])
+                    print("Deal Price:", deal["salePrice"])
+                    print("-" * 30)
+                    
         elif choice == '3':
-            search_by_game_id()
+            print("Random Games with Game ID:")
+            random.shuffle(deals)  # Displays random examples for Game IDs
+            for _ in range(5): # Five game examples are given
+                deal = random.choice(deals)  # Selects a random deal
+                print("Game ID:", deal["gameID"])
+            
+            game_id = input("Enter the game ID: ")
+            game = search_by_game_id(game_id, deals)
+            
+            if game:
+                print("Game Title:", game["title"])
+                print("Deal ID:", game["dealID"])
+                print("Game ID:", game["gameID"])
+                print("Normal Price:", game["normalPrice"])
+                print("Deal Price:", game["salePrice"])
+                print("-" * 30)
+            else:
+                print("Game not found.")
+
+        
         elif choice == '4': # The specified choice
             deals = fetch_game_deals() # Fetches game deals
             min_price = None 
